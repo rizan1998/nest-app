@@ -10,16 +10,11 @@ import { typeOrmConfig } from './config/database.config'; // Pastikan path ini b
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
-      load: [typeOrmConfig], // Load konfigurasi database
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const dbConfig = configService.get('database');
-        return dbConfig;
-      },
       inject: [ConfigService],
+      useFactory: (configService: ConfigService) => typeOrmConfig(configService),
     }),
     ArticleModule
   ],
