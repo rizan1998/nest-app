@@ -30,25 +30,19 @@ export class ArticleController {
     @Put("/:id")
     async update(@Param() params: FindOneParams, @Body() updateArticleDto: updateArticleDto): Promise<Article> {
         const article = await this.findOneOrFail(params.id); // await the promise
-        if (!article) {
-            throw new NotFoundException(`Article with ID ${params.id} not found`);
-        }
-        return await this.articleService.updateArticleByParams(article, updateArticleDto);
+        return this.articleService.updateArticleByParams(article, updateArticleDto);
     }
 
     @Delete("/:id")
     @HttpCode(HttpStatus.NO_CONTENT)
     async delete(@Param() params: FindOneParams): Promise<void> {
         const article = await this.findOneOrFail(params.id); // await the promise
-        if (!article) {
-            throw new NotFoundException(`Article with ID ${params.id} not found`);
-        }
-        this.articleService.deleteArticleByParams(article);
+        return this.articleService.deleteArticleByParams(article);
     }
 
 
-    private async findOneOrFail(id: string): Promise<Article | null> {
-        const article = this.articleService.findOneBydParams(id);
+    private async findOneOrFail(id: string): Promise<Article> {
+        const article = await this.articleService.findOneBydParams(id);
         if (!article) {
             throw new NotFoundException(`Article with ID ${id} not found`);
         }
