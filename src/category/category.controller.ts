@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpStatus, HttpCode, Put } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -24,13 +24,14 @@ export class CategoryController {
     return await this.findOneOrFail(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   async update(@Param() params: FindOneParams, @Body() updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     const category = await this.findOneOrFail(params.id);
     return this.categoryService.update(category, updateCategoryDto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param() params: FindOneParams): Promise<void> {
     const category = await this.findOneOrFail(params.id);
     await this.categoryService.remove(category);
